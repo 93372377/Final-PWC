@@ -3,7 +3,7 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from './authConfig';
 
 const App = () => {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState('signin');
   const [section, setSection] = useState('');
   const [entity, setEntity] = useState('');
   const [month, setMonth] = useState('');
@@ -17,7 +17,9 @@ const App = () => {
   const { instance, accounts } = useMsal();
 
   const signIn = () => {
-    instance.loginPopup(loginRequest).catch(console.error);
+    instance.loginPopup(loginRequest).then(() => {
+      setView('home');
+    }).catch(console.error);
   };
 
   const getAccessToken = async () => {
@@ -64,112 +66,6 @@ const App = () => {
     }
   };
 
-  const FileInputCell = ({ value, onTextChange, onFileUpload }) => {
-    const fileRef = useRef();
-    return (
-      <div style={{ position: 'relative', cursor: 'pointer' }}>
-        <input
-          type="text"
-          value={value || ''}
-          onChange={onTextChange}
-          onClick={(e) => {
-            e.stopPropagation();
-            fileRef.current?.click();
-          }}
-          style={{ width: '100%', padding: '4px', textAlign: 'center' }}
-        />
-        <input
-          type="file"
-          ref={fileRef}
-          style={{ display: 'none' }}
-          onChange={onFileUpload}
-        />
-      </div>
-    );
-  };
-
-  const handleFilterChange = (e, key) => {
-    setFilters({ ...filters, [key]: e.target.value });
-  };
-
-  const getFilteredData = (data, headers) => {
-    return data.filter(row =>
-      headers.every(({ key }) =>
-        !filters[key] || row[key]?.toString().includes(filters[key])
-      )
-    );
-  };
-
-  const tableStyles = {
-    table: { width: '100%', borderCollapse: 'collapse', marginTop: '1rem' },
-    th: { backgroundColor: '#007C91', color: 'white', padding: '8px', border: '1px solid #ccc' },
-    td: { padding: '8px', border: '1px solid #ccc', textAlign: 'center' },
-    filter: { width: '100%', padding: '4px', marginTop: '4px' }
-  };
-
-  const renderUploadTable = (headers, data, setData) => {
-    const filteredData = getFilteredData(data, headers);
-
-    return (
-      <>
-        <table style={tableStyles.table}>
-          <thead>
-            <tr>
-              {headers.map(({ key, label }) => (
-                <th key={key} style={tableStyles.th}>
-                  {label}
-                  <select
-                    value={filters[key] || ''}
-                    onChange={(e) => handleFilterChange(e, key)}
-                    style={tableStyles.filter}
-                  >
-                    <option value="">All</option>
-                    {[...new Set(data.map(row => row[key]).filter(Boolean))].map((val, idx) => (
-                      <option key={idx} value={val}>{val}</option>
-                    ))}
-                  </select>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map((row, rowIdx) => (
-              <tr key={rowIdx}>
-                {headers.map(({ key }) => (
-                  <td key={key} style={tableStyles.td}>
-                    <FileInputCell
-                      value={row[key]}
-                      onTextChange={(e) => handleInputChange(e, data, setData, rowIdx, key)}
-                      onFileUpload={(e) => handleFileUpload(e, data, setData, rowIdx, key)}
-                    />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <button
-          onClick={() => setData([...data, {}])}
-          style={{
-            marginTop: '10px',
-            padding: '8px 16px',
-            backgroundColor: '#007C91',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px'
-          }}
-        >
-          ➕ Add Row
-        </button>
-        <br />
-        <button onClick={() => setView('dashboard')} style={{ marginTop: '10px' }}>
-          ← Go Back
-        </button>
-      </>
-    );
-  };
-
   const renderUploadPage = () => {
     if (section === 'cash_app') {
       const headers = [
@@ -182,7 +78,6 @@ const App = () => {
       ];
       return renderUploadTable(headers, invoiceData, setInvoiceData);
     }
-
     if (section === 'po_pod') {
       const headers = [
         { key: 'so', label: 'SO' },
@@ -199,7 +94,6 @@ const App = () => {
       ];
       return renderUploadTable(headers, poPodData, setPoPodData);
     }
-
     if (section === 'follow_up') {
       const headers = [
         { key: 'group', label: 'Group/Statutory' },
@@ -220,23 +114,28 @@ const App = () => {
       ];
       return renderUploadTable(headers, followUpData, setFollowUpData);
     }
-
     return null;
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Segoe UI', backgroundColor: '#f4fafd', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/MSD_Sharp_and_Dohme_logo.svg" alt="MSD Logo" style={{ height: '50px' }} />
-      </div>
-
-      <button onClick={signIn} style={{ marginBottom: '1rem' }}>
-        Sign in with Microsoft
-      </button>
+    <div style={{ minHeight: '100vh', padding: '2rem', fontFamily: 'Segoe UI', backgroundColor: '#f4fafd' }}>
+      {view === 'signin' && (
+        <div style={{ textAlign: 'center', marginTop: '10%' }}>
+          <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
+          <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '60px', marginBottom: '2rem' }} />
+          <br />
+          <button onClick={signIn} style={{ padding: '0.8rem 2rem', backgroundColor: '#007C91', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+            Sign in with Microsoft
+          </button>
+        </div>
+      )}
 
       {view === 'home' && (
         <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
+            <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '50px' }} />
+          </div>
           <p>Select a section to continue:</p>
           {['cash_app', 'po_pod', 'follow_up'].map((s) => (
             <button key={s} onClick={() => handleSectionClick(s)} style={{
