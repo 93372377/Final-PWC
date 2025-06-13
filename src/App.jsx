@@ -21,7 +21,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (accounts && accounts.length > 0) {
+    if (accounts.length > 0) {
       setView('home');
     }
   }, [accounts]);
@@ -150,6 +150,7 @@ const App = () => {
       {view === 'home' && (
         <div>
           <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
+          <p>Signed in as: <strong>{accounts[0].username}</strong></p>
           <p>Select a section to continue:</p>
           {['cash_app', 'po_pod', 'follow_up'].map((s) => (
             <button
