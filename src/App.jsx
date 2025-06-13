@@ -126,7 +126,13 @@ const App = () => {
   };
 
   const renderLogo = () => (
-    <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '50px', position: 'absolute', top: '20px', right: '20px' }} />
+    view !== 'signin' && (
+      <img
+        src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp"
+        alt="MSD Logo"
+        style={{ height: '50px', position: 'absolute', top: '20px', right: '20px' }}
+      />
+    )
   );
 
   return (
@@ -135,33 +141,57 @@ const App = () => {
 
       {view === 'signin' && (
         <div style={{ textAlign: 'center', marginTop: '10%' }}>
-          <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '80px', marginBottom: '1rem' }} />
-          <h1 style={{ color: '#007C91', fontSize: '2rem', marginBottom: '2rem' }}>PWC Testing Automation</h1>
-          <button onClick={signIn} style={{ padding: '0.8rem 2rem', backgroundColor: '#007C91', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+          <img
+            src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp"
+            alt="MSD Logo"
+            style={{ height: '100px', marginBottom: '1rem' }}
+          />
+          <h1 style={{ color: '#007C91', fontSize: '2.5rem', marginBottom: '2rem' }}>PWC Testing Automation</h1>
+          <button
+            onClick={signIn}
+            style={{
+              padding: '0.8rem 2rem',
+              backgroundColor: '#007C91',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}
+          >
             Sign in with Microsoft
           </button>
         </div>
       )}
 
       {view === 'home' && (
-        <>
+        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
           <div style={{ marginBottom: '1rem' }}>
             <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
           </div>
           <p>Select a section to continue:</p>
           {['cash_app', 'po_pod', 'follow_up'].map((s) => (
-            <button key={s} onClick={() => handleSectionClick(s)} style={{
-              margin: '1rem', padding: '1rem 2rem', backgroundColor: '#007C91',
-              color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer'
-            }}>
+            <button
+              key={s}
+              onClick={() => handleSectionClick(s)}
+              style={{
+                margin: '1rem',
+                padding: '1rem 2rem',
+                backgroundColor: '#007C91',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
               {s.replace('_', ' ').toUpperCase()}
             </button>
           ))}
-        </>
+        </div>
       )}
 
       {view === 'dashboard' && (
-        <>
+        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
           <form onSubmit={handleDashboardSubmit} style={{ maxWidth: '400px', margin: '2rem auto' }}>
             <label>Entity</label>
             <select value={entity} onChange={(e) => setEntity(e.target.value)} style={{ width: '100%', marginBottom: '1rem' }}>
@@ -193,10 +223,15 @@ const App = () => {
           <div style={{ textAlign: 'center' }}>
             <button onClick={() => setView('home')} style={{ marginTop: '1rem' }}>← Go Back</button>
           </div>
-        </>
+        </div>
       )}
 
-      {view === 'upload' && renderUploadPage()}
+      {view === 'upload' && (
+        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
+          {renderUploadPage()}
+        </div>
+      )}
+
       {message && <p style={{ color: '#007C91', marginTop: '1rem' }}>{message}</p>}
     </div>
   );
