@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from './authConfig';
 
@@ -31,12 +31,8 @@ const App = () => {
     return instance.acquireTokenSilent({ ...loginRequest, account });
   };
 
-  const entityOptions = [1207, 3188, 10121207, 3188, 1012, 1194, 380, 519, 1209, 1310, 3124, 1180, 1467, 466, 3121, 477, 1456, 1287,
-    1396, 3168, 417, 3583, 1698, 1443, 1662, 1204, 478, 1029,
-    1471, 1177, 1253, 1580, 3592, 1285, 3225, 1101, 1395, 1203,
-    1247, 1083, 1216, 1190, 3325, 3143, 3223, 1619];
-  const months = ['January', 'February', 'March', "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"];
+  const entityOptions = [1207, 3188, 1012];
+  const months = ['January', 'February', 'March'];
   const years = ['2025', '2026'];
 
   useEffect(() => {
@@ -59,19 +55,6 @@ const App = () => {
     e.preventDefault();
     if (entity && month && year) setView('upload');
     else alert('Please select entity, month, and year.');
-  };
-
-  const handleInputChange = (e, data, setData, rowIdx, key) => {
-    const updated = [...data];
-    updated[rowIdx][key] = e.target.value;
-    setData(updated);
-  };
-
-  const handleFileUpload = (e, data, setData, rowIdx, key) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log(`📁 File uploaded for row ${rowIdx}, column ${key}: ${file.name}`);
-    }
   };
 
   const renderUploadPage = () => {
@@ -136,7 +119,7 @@ const App = () => {
   );
 
   return (
-    <div style={{ minHeight: '100vh', padding: '2rem', fontFamily: 'Segoe UI', backgroundColor: '#f4fafd', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f4fafd', fontFamily: 'Segoe UI', position: 'relative', padding: '2rem' }}>
       {renderLogo()}
 
       {view === 'signin' && (
@@ -144,7 +127,7 @@ const App = () => {
           <img
             src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp"
             alt="MSD Logo"
-            style={{ height: '100px', marginBottom: '1rem' }}
+            style={{ width: '400px', maxWidth: '80%', marginBottom: '1rem' }}
           />
           <h1 style={{ color: '#007C91', fontSize: '2.5rem', marginBottom: '2rem' }}>PWC Testing Automation</h1>
           <button
@@ -165,10 +148,8 @@ const App = () => {
       )}
 
       {view === 'home' && (
-        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
-          </div>
+        <div>
+          <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
           <p>Select a section to continue:</p>
           {['cash_app', 'po_pod', 'follow_up'].map((s) => (
             <button
@@ -191,7 +172,7 @@ const App = () => {
       )}
 
       {view === 'dashboard' && (
-        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
+        <div>
           <form onSubmit={handleDashboardSubmit} style={{ maxWidth: '400px', margin: '2rem auto' }}>
             <label>Entity</label>
             <select value={entity} onChange={(e) => setEntity(e.target.value)} style={{ width: '100%', marginBottom: '1rem' }}>
@@ -227,7 +208,7 @@ const App = () => {
       )}
 
       {view === 'upload' && (
-        <div style={{ backgroundColor: '#f4fafd', padding: '2rem', minHeight: '100vh' }}>
+        <div>
           {renderUploadPage()}
         </div>
       )}
