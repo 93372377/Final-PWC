@@ -17,18 +17,26 @@ const App = () => {
   const { instance, accounts } = useMsal();
 
   const signIn = () => {
-    instance.loginPopup(loginRequest).then(() => {
-      setView('home');
-    }).catch(console.error);
+    instance.loginRedirect(loginRequest);
   };
+
+  useEffect(() => {
+    if (accounts && accounts.length > 0) {
+      setView('home');
+    }
+  }, [accounts]);
 
   const getAccessToken = async () => {
     const account = accounts[0];
     return instance.acquireTokenSilent({ ...loginRequest, account });
   };
 
-  const entityOptions = [1207, 3188, 1012];
-  const months = ['January', 'February', 'March'];
+  const entityOptions = [1207, 3188, 10121207, 3188, 1012, 1194, 380, 519, 1209, 1310, 3124, 1180, 1467, 466, 3121, 477, 1456, 1287,
+    1396, 3168, 417, 3583, 1698, 1443, 1662, 1204, 478, 1029,
+    1471, 1177, 1253, 1580, 3592, 1285, 3225, 1101, 1395, 1203,
+    1247, 1083, 1216, 1190, 3325, 3143, 3223, 1619];
+  const months = ['January', 'February', 'March', "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
   const years = ['2025', '2026'];
 
   useEffect(() => {
@@ -117,13 +125,18 @@ const App = () => {
     return null;
   };
 
+  const renderLogo = () => (
+    <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '50px', position: 'absolute', top: '20px', right: '20px' }} />
+  );
+
   return (
-    <div style={{ minHeight: '100vh', padding: '2rem', fontFamily: 'Segoe UI', backgroundColor: '#f4fafd' }}>
+    <div style={{ minHeight: '100vh', padding: '2rem', fontFamily: 'Segoe UI', backgroundColor: '#f4fafd', position: 'relative' }}>
+      {renderLogo()}
+
       {view === 'signin' && (
         <div style={{ textAlign: 'center', marginTop: '10%' }}>
-          <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
-          <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '60px', marginBottom: '2rem' }} />
-          <br />
+          <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '80px', marginBottom: '1rem' }} />
+          <h1 style={{ color: '#007C91', fontSize: '2rem', marginBottom: '2rem' }}>PWC Testing Automation</h1>
           <button onClick={signIn} style={{ padding: '0.8rem 2rem', backgroundColor: '#007C91', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
             Sign in with Microsoft
           </button>
@@ -132,9 +145,8 @@ const App = () => {
 
       {view === 'home' && (
         <>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ marginBottom: '1rem' }}>
             <h2 style={{ color: '#007C91' }}>PWC Testing Automation</h2>
-            <img src="https://logowik.com/content/uploads/images/merck-sharp-dohme-msd5762.logowik.com.webp" alt="MSD Logo" style={{ height: '50px' }} />
           </div>
           <p>Select a section to continue:</p>
           {['cash_app', 'po_pod', 'follow_up'].map((s) => (
